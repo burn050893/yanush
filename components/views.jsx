@@ -11,31 +11,56 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
-const HERO_IMAGES = [
-  'https://images.unsplash.com/photo-1618418721668-0d1f72aa4bab?w=1920&q=80',
-  'https://images.unsplash.com/photo-1580679568899-be51739ba2df?w=1920&q=80',
-  'https://images.unsplash.com/photo-1489686995744-f47e995ffe61?w=1920&q=80',
-  'https://images.unsplash.com/photo-1485291571150-772bcfc10da5?w=1920&q=80',
+const HERO_IMAGES_RAW = [
+  { url: 'https://images.unsplash.com/photo-1614605637622-84a362f981f1?w=1920&q=80', label: 'Porsche Panamera' },
+  { url: 'https://images.unsplash.com/photo-1567808291548-fc3ee04dbcf0?w=1920&q=80', label: 'Audi R8' },
+  { url: 'https://images.unsplash.com/photo-1594051673969-172a6f721d3c?w=1920&q=80', label: 'BMW 5 Series' },
+  { url: 'https://images.unsplash.com/photo-1610475426610-9d49bac9e278?w=1920&q=80', label: 'Audi RS Q8' },
+  { url: 'https://images.unsplash.com/photo-1582467029039-e3b110cbe8d9?w=1920&q=80', label: 'Jaecoo SUV' },
+  { url: 'https://images.unsplash.com/photo-1610641018620-fd72f15b9eab?w=1920&q=80', label: 'Takeldienst 24/7' },
+  { url: 'https://images.unsplash.com/photo-1659031981099-00ecc60adf30?w=1920&q=80', label: 'Audi A3' },
+  { url: 'https://images.pexels.com/photos/10561894/pexels-photo-10561894.jpeg?w=1920&q=80', label: 'Peugeot' },
 ];
+
+// Fisher-Yates shuffle for random order each load
+const shuffle = (arr) => {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
 
 // ============ HOME VIEW ============
 export const HomeView = ({ lang, setView, cars }) => {
   const [idx, setIdx] = useState(0);
+  // Shuffle hero images once on mount for variety on each visit
+  const [heroImages] = useState(() => shuffle(HERO_IMAGES_RAW));
+
   useEffect(() => {
-    const i = setInterval(() => setIdx((p) => (p + 1) % HERO_IMAGES.length), 6000);
+    const i = setInterval(() => setIdx((p) => (p + 1) % heroImages.length), 6000);
     return () => clearInterval(i);
-  }, []);
+  }, [heroImages.length]);
 
   return (
     <>
       {/* HERO */}
       <section className="relative h-screen min-h-[700px] w-full overflow-hidden">
-        {HERO_IMAGES.map((img, i) => (
-          <motion.div key={img} initial={{ opacity: 0, scale: 1.1 }} animate={{ opacity: i === idx ? 1 : 0, scale: i === idx ? 1 : 1.1 }} transition={{ duration: 1.5 }}
-            className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${img})` }} />
+        {heroImages.map((img, i) => (
+          <motion.div key={img.url} initial={{ opacity: 0, scale: 1.1 }} animate={{ opacity: i === idx ? 1 : 0, scale: i === idx ? 1 : 1.1 }} transition={{ duration: 1.5 }}
+            className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${img.url})` }} />
         ))}
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent" />
+
+        {/* current car label */}
+        <div className="absolute top-24 right-6 lg:right-12 z-10">
+          <motion.div key={heroImages[idx]?.label} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}
+            className="px-3 py-1.5 glass-gold rounded-full text-[11px] uppercase tracking-[0.25em] text-[#d4af37] hidden sm:block">
+            {heroImages[idx]?.label}
+          </motion.div>
+        </div>
 
         <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
           <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }}>
@@ -64,7 +89,7 @@ export const HomeView = ({ lang, setView, cars }) => {
 
           {/* slider dots */}
           <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2">
-            {HERO_IMAGES.map((_, i) => (
+            {heroImages.map((_, i) => (
               <button key={i} onClick={() => setIdx(i)} className={`h-1 transition-all duration-500 ${i === idx ? 'w-12 bg-[#d4af37]' : 'w-6 bg-white/30'}`} />
             ))}
           </div>
