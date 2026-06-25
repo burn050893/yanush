@@ -100,18 +100,30 @@ export const HomeView = ({ lang, setView, cars }) => {
       </section>
 
       {/* TRUST STRIP */}
-      <section className="py-8 bg-black border-y border-[#d4af37]/10">
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6">
+      <section className="py-12 bg-black border-y border-[#d4af37]/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { icon: Award, label: '5+ Jaar Ervaring' },
-            { icon: Shield, label: 'Belgische Keuring' },
-            { icon: Star, label: 'Premium Selectie' },
-            { icon: TrendingUp, label: '100+ Verkocht' },
+            { icon: Award, t: t(lang, 'usp.t1'), d: t(lang, 'usp.t1d') },
+            { icon: Shield, t: t(lang, 'usp.t2'), d: t(lang, 'usp.t2d') },
+            { icon: Star, t: t(lang, 'usp.t3'), d: t(lang, 'usp.t3d') },
+            { icon: TrendingUp, t: t(lang, 'usp.t4'), d: t(lang, 'usp.t4d') },
           ].map((it, i) => (
-            <div key={i} className="flex items-center gap-3 justify-center text-center">
-              <it.icon className="w-6 h-6 text-[#d4af37]" />
-              <span className="text-sm text-white/80 uppercase tracking-wider">{it.label}</span>
-            </div>
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.08 }}
+              className="flex items-start gap-4 group"
+            >
+              <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-gradient-to-br from-[#d4af37]/20 to-[#d4af37]/5 border border-[#d4af37]/30 flex items-center justify-center group-hover:border-[#d4af37] transition-colors duration-300">
+                <it.icon className="w-5 h-5 text-[#d4af37]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-bold text-white uppercase tracking-wider">{it.t}</div>
+                <div className="text-xs text-white/55 mt-1 leading-relaxed">{it.d}</div>
+              </div>
+            </motion.div>
           ))}
         </div>
       </section>
