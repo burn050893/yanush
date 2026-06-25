@@ -15,9 +15,12 @@ const HERO_IMAGES_RAW = [
   { url: '/heroes/porsche.jpg', label: 'Porsche 911' },
   { url: '/heroes/audi-r8.jpg', label: 'Audi R8' },
   { url: '/heroes/bmw-m5.jpg', label: 'BMW M5' },
-  { url: '/heroes/takel.jpg', label: 'Takeldienst 24/7' },
+  { url: '/heroes/mercedes.jpg', label: 'Mercedes-Benz' },
+  { url: '/heroes/range-rover.jpg', label: 'Range Rover' },
+  { url: '/heroes/volvo.jpg', label: 'Volvo XC' },
   { url: '/heroes/audi-a3.jpg', label: 'Audi A3' },
   { url: '/heroes/peugeot.jpg', label: 'Peugeot 3008' },
+  { url: '/heroes/takel.jpg', label: 'Takeldienst 24/7' },
 ];
 
 // Fisher-Yates shuffle for random order each load
