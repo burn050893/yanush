@@ -1,7 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Star, Award, Shield, TrendingUp, Calendar, Gauge, Fuel, Settings, MessageCircle, MapPin, Phone, Mail, Send, ChevronDown, Search, X, Wrench, Truck, AlertCircle, ArrowRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Award, Shield, TrendingUp, Calendar, Gauge, Fuel, Settings, MessageCircle, MapPin, Phone, Mail, Send, ChevronDown, Search, X, Wrench, Truck, AlertCircle, ArrowRight, FileText, PhoneCall, ClipboardCheck, HandCoins } from 'lucide-react';
 import { SITE } from '@/lib/site';
 import { t } from '@/lib/i18n';
 import { CarCard, formatPrice, formatKm } from './car-card';
@@ -356,41 +356,121 @@ export const SellView = ({ lang }) => {
     finally { setBusy(false); }
   };
 
+  const steps = [
+    { icon: FileText, t: t(lang, 'sell.p1t'), d: t(lang, 'sell.p1d') },
+    { icon: PhoneCall, t: t(lang, 'sell.p2t'), d: t(lang, 'sell.p2d') },
+    { icon: ClipboardCheck, t: t(lang, 'sell.p3t'), d: t(lang, 'sell.p3d') },
+    { icon: HandCoins, t: t(lang, 'sell.p4t'), d: t(lang, 'sell.p4d') },
+  ];
+
   return (
-    <section className="pt-32 pb-24 max-w-3xl mx-auto px-4 sm:px-6">
-      <div className="text-center mb-10">
+    <section className="pt-32 pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="text-center mb-12">
         <h1 className="text-5xl font-bold gold-text mb-3">{t(lang, 'sell.title')}</h1>
         <p className="text-white/60">{t(lang, 'sell.subtitle')}</p>
       </div>
-      <form onSubmit={submit} className="glass rounded-xl p-8 space-y-5">
-        <div className="grid md:grid-cols-2 gap-5">
-          <div><Label className="text-white/80">{t(lang, 'sell.name')} *</Label><Input value={form.name} onChange={upd('name')} required className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
-          <div><Label className="text-white/80">{t(lang, 'sell.phone')} *</Label><Input value={form.phone} onChange={upd('phone')} required className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
-          <div className="md:col-span-2"><Label className="text-white/80">{t(lang, 'sell.email')}</Label><Input type="email" value={form.email} onChange={upd('email')} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
-          <div><Label className="text-white/80">{t(lang, 'sell.brand')}</Label><Input value={form.brand} onChange={upd('brand')} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
-          <div><Label className="text-white/80">{t(lang, 'sell.model')}</Label><Input value={form.model} onChange={upd('model')} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
-          <div><Label className="text-white/80">{t(lang, 'sell.year')}</Label><Input value={form.year} onChange={upd('year')} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
-          <div><Label className="text-white/80">{t(lang, 'sell.mileage')}</Label><Input value={form.mileage} onChange={upd('mileage')} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
-        </div>
-        <div><Label className="text-white/80">{t(lang, 'sell.message')}</Label><Textarea value={form.message} onChange={upd('message')} rows={4} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
-        <div>
-          <Label className="text-white/80">{t(lang, 'sell.photos')}</Label>
-          <input type="file" multiple accept="image/*" onChange={onFiles} className="mt-1.5 block w-full text-sm text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#d4af37] file:text-black hover:file:bg-[#f3d57a] file:cursor-pointer" />
-          {images.length > 0 && (
-            <div className="grid grid-cols-4 gap-2 mt-3">
-              {images.map((im, i) => (
-                <div key={i} className="relative aspect-square rounded-md overflow-hidden">
-                  <img src={im} className="w-full h-full object-cover" alt="" />
-                  <button type="button" onClick={() => setImages(images.filter((_, j) => j !== i))} className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/80 text-white text-xs flex items-center justify-center">×</button>
-                </div>
-              ))}
+
+      <div className="grid lg:grid-cols-5 gap-8 lg:gap-10">
+        {/* FORM — left (3 cols) */}
+        <motion.form
+          onSubmit={submit}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="lg:col-span-3 glass rounded-2xl p-7 sm:p-8 space-y-5"
+        >
+          <div className="grid md:grid-cols-2 gap-5">
+            <div><Label className="text-white/80">{t(lang, 'sell.name')} *</Label><Input value={form.name} onChange={upd('name')} required className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
+            <div><Label className="text-white/80">{t(lang, 'sell.phone')} *</Label><Input value={form.phone} onChange={upd('phone')} required className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
+            <div className="md:col-span-2"><Label className="text-white/80">{t(lang, 'sell.email')}</Label><Input type="email" value={form.email} onChange={upd('email')} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
+            <div><Label className="text-white/80">{t(lang, 'sell.brand')}</Label><Input value={form.brand} onChange={upd('brand')} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
+            <div><Label className="text-white/80">{t(lang, 'sell.model')}</Label><Input value={form.model} onChange={upd('model')} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
+            <div><Label className="text-white/80">{t(lang, 'sell.year')}</Label><Input value={form.year} onChange={upd('year')} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
+            <div><Label className="text-white/80">{t(lang, 'sell.mileage')}</Label><Input value={form.mileage} onChange={upd('mileage')} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
+          </div>
+          <div><Label className="text-white/80">{t(lang, 'sell.message')}</Label><Textarea value={form.message} onChange={upd('message')} rows={4} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
+          <div>
+            <Label className="text-white/80">{t(lang, 'sell.photos')}</Label>
+            <input type="file" multiple accept="image/*" onChange={onFiles} className="mt-1.5 block w-full text-sm text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#d4af37] file:text-black hover:file:bg-[#f3d57a] file:cursor-pointer" />
+            {images.length > 0 && (
+              <div className="grid grid-cols-4 gap-2 mt-3">
+                {images.map((im, i) => (
+                  <div key={i} className="relative aspect-square rounded-md overflow-hidden">
+                    <img src={im} className="w-full h-full object-cover" alt="" />
+                    <button type="button" onClick={() => setImages(images.filter((_, j) => j !== i))} className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/80 text-white text-xs flex items-center justify-center">×</button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <Button type="submit" disabled={busy} className="w-full btn-gold border-0 py-6 rounded-md uppercase tracking-wider font-semibold">
+            {busy ? t(lang, 'sell.uploading') : (<><Send className="w-4 h-4 mr-2" />{t(lang, 'sell.submit')}</>)}
+          </Button>
+        </motion.form>
+
+        {/* PROCESS STEPS — right (2 cols) */}
+        <motion.aside
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className="lg:col-span-2 lg:sticky lg:top-28 self-start space-y-5"
+        >
+          <div className="text-center lg:text-left mb-1">
+            <div className="inline-flex items-center gap-2 mb-2">
+              <div className="h-px w-8 bg-[#d4af37]" />
+              <span className="text-[#d4af37] text-[10px] tracking-[0.35em] uppercase">Process</span>
             </div>
-          )}
-        </div>
-        <Button type="submit" disabled={busy} className="w-full btn-gold border-0 py-6 rounded-md uppercase tracking-wider font-semibold">
-          {busy ? t(lang, 'sell.uploading') : (<><Send className="w-4 h-4 mr-2" />{t(lang, 'sell.submit')}</>)}
-        </Button>
-      </form>
+            <h2 className="text-2xl sm:text-3xl font-bold gold-text leading-tight">{t(lang, 'sell.processTitle')}</h2>
+            <p className="text-white/55 text-sm mt-1.5">{t(lang, 'sell.processSub')}</p>
+          </div>
+
+          <div className="relative space-y-3">
+            {/* connector line */}
+            <div className="absolute left-[27px] top-12 bottom-12 w-px bg-gradient-to-b from-[#d4af37]/50 via-[#d4af37]/20 to-transparent" />
+            {steps.map((s, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.5, delay: 0.25 + i * 0.12 }}
+                className="group relative flex gap-4 p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-[#d4af37]/50 hover:bg-[#d4af37]/[0.04] transition-all duration-500 hover:-translate-y-0.5 hover:shadow-[0_10px_30px_-10px_rgba(212,175,55,0.35)]"
+              >
+                <div className="relative flex-shrink-0">
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#d4af37]/25 via-[#d4af37]/10 to-transparent border border-[#d4af37]/40 flex items-center justify-center group-hover:border-[#d4af37] transition-all duration-500 group-hover:rotate-3">
+                    <s.icon className="w-6 h-6 text-[#d4af37]" />
+                  </div>
+                  <div className="absolute -top-1.5 -left-1.5 w-6 h-6 rounded-full bg-[#d4af37] text-black text-[11px] font-black flex items-center justify-center shadow-lg">
+                    {i + 1}
+                  </div>
+                </div>
+                <div className="flex-1 min-w-0 pt-0.5">
+                  <h3 className="font-bold text-white text-[15px] mb-1 group-hover:text-[#d4af37] transition-colors">{s.t}</h3>
+                  <p className="text-xs sm:text-[13px] text-white/60 leading-relaxed">{s.d}</p>
+                </div>
+                {/* subtle decorative chevron */}
+                <ChevronRight className="absolute top-1/2 -translate-y-1/2 right-3 w-4 h-4 text-[#d4af37]/0 group-hover:text-[#d4af37]/60 transition-all duration-500 group-hover:translate-x-1" />
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Trust badge under steps */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.8 }}
+            className="glass-gold rounded-xl p-4 flex items-center gap-3"
+          >
+            <div className="w-10 h-10 rounded-full bg-[#d4af37]/20 border border-[#d4af37]/40 flex items-center justify-center flex-shrink-0">
+              <Shield className="w-5 h-5 text-[#d4af37]" />
+            </div>
+            <div className="text-xs text-white/75 leading-snug">
+              <strong className="text-white">100% transparant.</strong> Geen verborgen kosten, geen verplichtingen.
+            </div>
+          </motion.div>
+        </motion.aside>
+      </div>
     </section>
   );
 };
