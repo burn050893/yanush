@@ -398,29 +398,71 @@ export const SellView = ({ lang }) => {
 // ============ SERVICES ============
 export const ServicesView = ({ lang }) => {
   const services = [
-    { icon: Shield, title: t(lang, 'services.s1'), desc: t(lang, 'services.s1d') },
-    { icon: Truck, title: t(lang, 'services.s2'), desc: t(lang, 'services.s2d') },
-    { icon: AlertCircle, title: t(lang, 'services.s3'), desc: t(lang, 'services.s3d') },
-    { icon: Wrench, title: t(lang, 'services.s4'), desc: t(lang, 'services.s4d') },
+    { icon: Shield, title: t(lang, 'services.s1'), intro: t(lang, 'services.s1d'), desc: t(lang, 'services.s1l') },
+    { icon: Truck, title: t(lang, 'services.s2'), intro: t(lang, 'services.s2d'), desc: t(lang, 'services.s2l') },
+    { icon: AlertCircle, title: t(lang, 'services.s3'), intro: t(lang, 'services.s3d'), desc: t(lang, 'services.s3l') },
+    { icon: Wrench, title: t(lang, 'services.s4'), intro: t(lang, 'services.s4d'), desc: t(lang, 'services.s4l') },
   ];
   return (
     <section className="pt-32 pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="text-center mb-12">
-        <h1 className="text-5xl font-bold gold-text mb-3">{t(lang, 'services.title')}</h1>
-        <p className="text-white/60">{t(lang, 'services.subtitle')}</p>
+      <div className="text-center mb-16">
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <div className="h-px w-12 bg-[#d4af37]" />
+          <span className="text-[#d4af37] text-xs tracking-[0.4em] uppercase">Services</span>
+          <div className="h-px w-12 bg-[#d4af37]" />
+        </div>
+        <h1 className="text-5xl sm:text-6xl font-bold gold-text mb-4">{t(lang, 'services.title')}</h1>
+        <p className="text-white/60 text-lg max-w-2xl mx-auto">{t(lang, 'services.subtitle')}</p>
       </div>
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
         {services.map((s, i) => (
-          <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-            className="glass rounded-xl p-8 border border-white/10 hover:border-[#d4af37]/50 transition-all hover:-translate-y-1 duration-500">
-            <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-[#d4af37]/20 to-[#d4af37]/5 border border-[#d4af37]/30 flex items-center justify-center mb-5">
-              <s.icon className="w-8 h-8 text-[#d4af37]" />
+          <motion.article
+            key={i}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.55, delay: i * 0.08, ease: 'easeOut' }}
+            className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/[0.04] to-transparent border border-white/10 p-8 sm:p-10 transition-all duration-500 hover:border-[#d4af37]/50 hover:-translate-y-1 hover:shadow-[0_25px_60px_-15px_rgba(212,175,55,0.25)]"
+          >
+            {/* Decorative gold accent corner */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#d4af37]/10 via-transparent to-transparent rounded-bl-full pointer-events-none" />
+            {/* Service number */}
+            <div className="absolute top-6 right-6 text-7xl font-black text-[#d4af37]/[0.08] leading-none pointer-events-none select-none">0{i + 1}</div>
+
+            <div className="relative">
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#d4af37]/20 to-[#d4af37]/5 border border-[#d4af37]/30 flex items-center justify-center mb-6 group-hover:border-[#d4af37] transition-colors duration-500">
+                <s.icon className="w-7 h-7 text-[#d4af37]" />
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3 leading-tight group-hover:text-[#d4af37] transition-colors duration-300">
+                {s.title}
+              </h3>
+              <p className="text-white/80 text-base font-medium mb-4 leading-relaxed">{s.intro}</p>
+              <div className="h-px w-12 bg-[#d4af37]/40 mb-4 group-hover:w-20 transition-all duration-500" />
+              <p className="text-white/60 text-sm sm:text-[15px] leading-relaxed">{s.desc}</p>
             </div>
-            <h3 className="text-2xl font-bold mb-3">{s.title}</h3>
-            <p className="text-white/60">{s.desc}</p>
-          </motion.div>
+          </motion.article>
         ))}
       </div>
+
+      {/* CTA strip below services */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="mt-16 glass-gold rounded-2xl p-8 sm:p-10 text-center"
+      >
+        <h3 className="text-2xl sm:text-3xl font-bold mb-3"><span className="gold-text">YANUSH Cars</span> — {t(lang, 'nav.contact')}</h3>
+        <p className="text-white/70 mb-6 max-w-xl mx-auto">{t(lang, 'services.subtitle')}</p>
+        <div className="flex flex-wrap gap-3 justify-center">
+          <a href={SITE.whatsappUrl} target="_blank" rel="noopener noreferrer" className="px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-md uppercase tracking-wider text-sm font-semibold transition-all inline-flex items-center gap-2">
+            <MessageCircle className="w-4 h-4" /> WhatsApp
+          </a>
+          <a href={`tel:${SITE.phoneIntl}`} className="px-6 py-3 btn-outline-gold rounded-md uppercase tracking-wider text-sm inline-flex items-center gap-2">
+            <Phone className="w-4 h-4" /> {SITE.phone}
+          </a>
+        </div>
+      </motion.div>
     </section>
   );
 };
