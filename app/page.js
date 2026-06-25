@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Header, Footer, WhatsAppFloat } from '@/components/layout';
 import { HomeView, FleetView, CarDetailView, SellView, ServicesView, AboutView, ContactView } from '@/components/views';
 import { AdminLogin, AdminDashboard } from '@/components/admin';
+import { t } from '@/lib/i18n';
 
 const App = () => {
   // view can be string ('home','fleet','sell','services','about','contact','admin') or {name:'car-detail', id}
@@ -30,6 +31,9 @@ const App = () => {
 
   useEffect(() => {
     try { localStorage.setItem('yanush_lang', lang); } catch {}
+    if (typeof document !== 'undefined') {
+      document.title = t(lang, 'seo.title');
+    }
   }, [lang]);
 
   // Load cars

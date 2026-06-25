@@ -2,8 +2,8 @@ import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
 
 export const metadata = {
-  title: 'YANUSH Cars — Premium Automotive Selection',
-  description: 'Premium tweedehands voertuigen. Kwaliteit, vertrouwen en ervaring. Bierstal 48, 9920 Lievegem.',
+  title: 'YANUSH Cars — Kwaliteit op wielen, vertrouwen bij elke kilometer',
+  description: 'Zorgvuldig geselecteerde tweedehands voertuigen, transparante service en een persoonlijke aanpak. Bierstal 48, 9920 Lievegem.',
   keywords: 'YANUSH Cars, autohandel, premium auto, tweedehands, Lievegem, Belgium',
 };
 
