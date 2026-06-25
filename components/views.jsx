@@ -1,7 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Star, Award, Shield, TrendingUp, Calendar, Gauge, Fuel, Settings, MessageCircle, MapPin, Phone, Mail, Send, ChevronDown, Search, X, Wrench, Truck, AlertCircle, ArrowRight, FileText, PhoneCall, ClipboardCheck, HandCoins } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Award, Shield, TrendingUp, Calendar, Gauge, Fuel, Settings, MessageCircle, MapPin, Phone, Mail, Send, ChevronDown, Search, X, Wrench, Truck, AlertCircle, ArrowRight, FileText, PhoneCall, ClipboardCheck, HandCoins, Gavel } from 'lucide-react';
 import { SITE } from '@/lib/site';
 import { t } from '@/lib/i18n';
 import { CarCard, formatPrice, formatKm } from './car-card';
@@ -815,20 +815,48 @@ export const ContactView = ({ lang }) => {
             <div><div className="text-xs uppercase tracking-wider text-white/50 mb-1">{t(lang, 'contact.whatsapp')}</div><div className="font-semibold">{SITE.phoneIntl}</div></div>
           </a>
           <div className="glass rounded-xl p-6 flex gap-4">
-            <Mail className="w-6 h-6 text-[#d4af37] flex-shrink-0 mt-1" />
+            <Gavel className="w-6 h-6 text-[#d4af37] flex-shrink-0 mt-1" />
             <div><div className="text-xs uppercase tracking-wider text-white/50 mb-1">{t(lang, 'contact.vat')}</div><div className="font-semibold">{SITE.vat}</div></div>
           </div>
           <div className="rounded-xl overflow-hidden border border-white/10 aspect-video">
             <iframe src={SITE.mapsEmbed} className="w-full h-full" loading="lazy" allowFullScreen referrerPolicy="no-referrer-when-downgrade" />
           </div>
         </div>
-        <form onSubmit={submit} className="glass rounded-xl p-8 space-y-5">
-          <div><Label className="text-white/80">{t(lang, 'contact.name')}</Label><Input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
-          <div><Label className="text-white/80">{t(lang, 'contact.email')}</Label><Input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
-          <div><Label className="text-white/80">{t(lang, 'contact.message')}</Label><Textarea required rows={6} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
-          <Button type="submit" disabled={busy} className="w-full btn-gold border-0 py-6 rounded-md uppercase tracking-wider font-semibold">
-            <Send className="w-4 h-4 mr-2" /> {t(lang, 'contact.send')}
-          </Button>
+        <form onSubmit={submit} className="glass rounded-xl p-0 overflow-hidden">
+          {/* Styled YANUSH showroom image — sits above the form */}
+          <motion.div
+            initial={{ opacity: 0, scale: 1.02 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative aspect-[742/300] overflow-hidden group"
+          >
+            <img
+              src="/contact/showroom.jpg"
+              alt="YANUSH Cars showroom"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="h-px w-8 bg-[#d4af37]" />
+                <span className="text-[#d4af37] text-[10px] tracking-[0.35em] uppercase">{t(lang, 'nav.contact')}</span>
+              </div>
+              <div className="text-white font-bold text-lg sm:text-xl leading-tight gold-text">YANUSH Cars — Lievegem</div>
+            </div>
+            {/* Animated gold corner accents */}
+            <div className="absolute top-3 left-3 w-8 h-8 border-l-2 border-t-2 border-[#d4af37]/70 transition-all duration-500 group-hover:w-12 group-hover:h-12" />
+            <div className="absolute bottom-3 right-3 w-8 h-8 border-r-2 border-b-2 border-[#d4af37]/70 transition-all duration-500 group-hover:w-12 group-hover:h-12" />
+          </motion.div>
+
+          <div className="p-8 space-y-5">
+            <div><Label className="text-white/80">{t(lang, 'contact.name')}</Label><Input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
+            <div><Label className="text-white/80">{t(lang, 'contact.email')}</Label><Input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
+            <div><Label className="text-white/80">{t(lang, 'contact.message')}</Label><Textarea required rows={6} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="mt-1.5 bg-black/50 border-white/10 focus:border-[#d4af37]" /></div>
+            <Button type="submit" disabled={busy} className="w-full btn-gold border-0 py-6 rounded-md uppercase tracking-wider font-semibold">
+              <Send className="w-4 h-4 mr-2" /> {t(lang, 'contact.send')}
+            </Button>
+          </div>
         </form>
       </div>
     </section>
