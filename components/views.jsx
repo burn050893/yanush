@@ -467,24 +467,267 @@ export const ServicesView = ({ lang }) => {
   );
 };
 
+// ============ COUNT UP HOOK ============
+const useCountUp = (target, duration = 1800, trigger = true) => {
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    if (!trigger) return;
+    if (target === 0) { setValue(0); return; }
+    let start = null;
+    let raf;
+    const step = (ts) => {
+      if (!start) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+      setValue(Math.floor(eased * target));
+      if (progress < 1) raf = requestAnimationFrame(step);
+      else setValue(target);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [target, duration, trigger]);
+  return value;
+};
+
+// Parse a stat label like "5+", "100+", "24/7" into { num, suffix }
+const parseStat = (raw) => {
+  const s = String(raw).trim();
+  if (s === '24/7' || s === '7/24') return { num: 24, suffix: s === '24/7' ? '/7' : '/24', renderPrefix: '' };
+  const m = s.match(/^(\d+)(.*)$/);
+  if (m) return { num: parseInt(m[1], 10), suffix: m[2], renderPrefix: '' };
+  return { num: 0, suffix: s, renderPrefix: '' };
+};
+
+const StatCounter = ({ value, label, delay = 0, inView }) => {
+  const parsed = parseStat(value);
+  const animated = useCountUp(parsed.num, 1600, inView);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, delay }}
+      className="glass-gold rounded-2xl p-6 sm:p-8 text-center group hover:border-[#d4af37] transition-all duration-500 hover:-translate-y-1"
+    >
+      <div className="text-5xl sm:text-6xl font-black gold-text leading-none">
+        {animated}{parsed.suffix}
+      </div>
+      <div className="text-xs sm:text-sm text-white/60 mt-3 uppercase tracking-wider leading-snug">{label}</div>
+    </motion.div>
+  );
+};
+
 // ============ ABOUT ============
 export const AboutView = ({ lang }) => {
+  const [statsInView, setStatsInView] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      const el = document.getElementById('about-stats');
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.85 && r.bottom > 0) setStatsInView(true);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const strengths = [
+    { icon: Award, t: t(lang, 'about.st1t'), d: t(lang, 'about.st1d') },
+    { icon: Shield, t: t(lang, 'about.st2t'), d: t(lang, 'about.st2d') },
+    { icon: Star, t: t(lang, 'about.st3t'), d: t(lang, 'about.st3d') },
+    { icon: MessageCircle, t: t(lang, 'about.st4t'), d: t(lang, 'about.st4d') },
+  ];
+  const stats = [
+    { v: t(lang, 'about.stat1v'), l: t(lang, 'about.stat1l') },
+    { v: t(lang, 'about.stat2v'), l: t(lang, 'about.stat2l') },
+    { v: t(lang, 'about.stat3v'), l: t(lang, 'about.stat3l') },
+    { v: t(lang, 'about.stat4v'), l: t(lang, 'about.stat4l') },
+  ];
+  const process = [
+    { t: t(lang, 'about.pr1t'), d: t(lang, 'about.pr1d') },
+    { t: t(lang, 'about.pr2t'), d: t(lang, 'about.pr2d') },
+    { t: t(lang, 'about.pr3t'), d: t(lang, 'about.pr3d') },
+    { t: t(lang, 'about.pr4t'), d: t(lang, 'about.pr4d') },
+  ];
+  const gallery = [
+    { src: '/about/showroom.jpg', label: 'Showroom' },
+    { src: '/about/inspection.jpg', label: 'Inspection' },
+    { src: '/about/handover.jpg', label: 'Delivery' },
+    { src: '/about/garage.jpg', label: 'Workshop' },
+  ];
+
   return (
-    <section className="pt-32 pb-24 max-w-5xl mx-auto px-4 sm:px-6">
-      <div className="text-center mb-12">
-        <h1 className="text-5xl font-bold gold-text mb-6">{t(lang, 'about.title')}</h1>
-      </div>
-      <div className="grid md:grid-cols-3 gap-4 mb-12">
-        <div className="glass-gold rounded-xl p-6 text-center"><div className="text-4xl font-black gold-text">5+</div><div className="text-sm text-white/60 mt-1 uppercase tracking-wider">{t(lang, 'about.exp')}</div></div>
-        <div className="glass-gold rounded-xl p-6 text-center"><div className="text-4xl font-black gold-text">100+</div><div className="text-sm text-white/60 mt-1 uppercase tracking-wider">{t(lang, 'about.sold')}</div></div>
-        <div className="glass-gold rounded-xl p-6 text-center"><div className="text-4xl font-black gold-text">99%</div><div className="text-sm text-white/60 mt-1 uppercase tracking-wider">{t(lang, 'about.trust')}</div></div>
-      </div>
-      <div className="glass rounded-xl p-8 space-y-5 text-white/80 leading-relaxed">
-        <p className="text-lg">{t(lang, 'about.p1')}</p>
-        <p>{t(lang, 'about.p2')}</p>
-        <p>{t(lang, 'about.p3')}</p>
-      </div>
-    </section>
+    <>
+      {/* HERO / INTRO */}
+      <section className="pt-32 pb-20 max-w-5xl mx-auto px-4 sm:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          className="text-center"
+        >
+          <div className="flex items-center justify-center gap-3 mb-5">
+            <div className="h-px w-12 bg-[#d4af37]" />
+            <span className="text-[#d4af37] text-xs tracking-[0.4em] uppercase">YANUSH Cars</span>
+            <div className="h-px w-12 bg-[#d4af37]" />
+          </div>
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold gold-text mb-6">{t(lang, 'about.title')}</h1>
+          <p className="text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">{t(lang, 'about.lead')}</p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="glass rounded-2xl p-8 sm:p-10 mt-12 space-y-5 text-white/75 leading-relaxed"
+        >
+          <p className="text-lg text-white">{t(lang, 'about.p1')}</p>
+          <p>{t(lang, 'about.p2')}</p>
+          <p>{t(lang, 'about.p3')}</p>
+        </motion.div>
+      </section>
+
+      {/* STRENGTHS */}
+      <section className="py-20 bg-gradient-to-b from-black via-zinc-950 to-black">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl sm:text-5xl font-bold gold-text mb-3">{t(lang, 'about.strengthsTitle')}</h2>
+            <p className="text-white/60 max-w-xl mx-auto">{t(lang, 'about.strengthsSub')}</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {strengths.map((s, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                className="group glass rounded-2xl p-6 border border-white/10 hover:border-[#d4af37]/50 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_15px_40px_-15px_rgba(212,175,55,0.3)]"
+              >
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#d4af37]/20 to-[#d4af37]/5 border border-[#d4af37]/30 flex items-center justify-center mb-4 group-hover:border-[#d4af37] transition-colors">
+                  <s.icon className="w-5 h-5 text-[#d4af37]" />
+                </div>
+                <h3 className="font-bold text-white text-base mb-2 group-hover:text-[#d4af37] transition-colors">{s.t}</h3>
+                <p className="text-sm text-white/60 leading-relaxed">{s.d}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* STATS COUNTERS */}
+      <section id="about-stats" className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl sm:text-5xl font-bold gold-text mb-3">{t(lang, 'about.statsTitle')}</h2>
+            <p className="text-white/60">{t(lang, 'about.statsSub')}</p>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+            {stats.map((s, i) => (
+              <StatCounter key={i} value={s.v} label={s.l} delay={i * 0.1} inView={statsInView} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PROCESS / APPROACH */}
+      <section className="py-20 bg-gradient-to-b from-black via-zinc-950 to-black">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-14">
+            <h2 className="text-4xl sm:text-5xl font-bold gold-text mb-3">{t(lang, 'about.processTitle')}</h2>
+            <p className="text-white/60">{t(lang, 'about.processSub')}</p>
+          </div>
+          <div className="relative">
+            {/* Vertical line for desktop */}
+            <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#d4af37]/40 to-transparent -translate-x-1/2" />
+            <div className="space-y-8 md:space-y-12">
+              {process.map((p, i) => {
+                const isLeft = i % 2 === 0;
+                return (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: isLeft ? -30 : 30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: '-80px' }}
+                    transition={{ duration: 0.6, delay: 0.05 * i }}
+                    className={`relative md:grid md:grid-cols-2 gap-8 items-center ${isLeft ? '' : 'md:[direction:rtl]'}`}
+                  >
+                    {/* Dot on the line */}
+                    <div className="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+                      <div className="w-4 h-4 rounded-full bg-[#d4af37] ring-4 ring-black shadow-[0_0_20px_rgba(212,175,55,0.7)]" />
+                    </div>
+                    <div className={`${isLeft ? 'md:pr-12 md:text-right' : 'md:pl-12 md:[direction:ltr]'}`}>
+                      <div className="glass rounded-2xl p-6 sm:p-7 border border-white/10 hover:border-[#d4af37]/40 transition-colors duration-500">
+                        <div className="flex items-center gap-3 mb-3" style={isLeft ? { justifyContent: 'flex-end' } : {}}>
+                          <span className="text-3xl font-black gold-text leading-none">{String(i + 1).padStart(2, '0')}</span>
+                          <h3 className="text-xl font-bold text-white">{p.t}</h3>
+                        </div>
+                        <p className="text-sm text-white/65 leading-relaxed">{p.d}</p>
+                      </div>
+                    </div>
+                    <div /> {/* placeholder for other side */}
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* GALLERY */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl sm:text-4xl font-bold gold-text">{t(lang, 'about.galleryTitle')}</h2>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {gallery.map((g, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                className="relative aspect-[4/5] rounded-2xl overflow-hidden group cursor-pointer"
+              >
+                <img src={g.src} alt={g.label} loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 text-white">
+                  <div className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] mb-1">YANUSH</div>
+                  <div className="font-bold text-sm">{g.label}</div>
+                </div>
+                <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#d4af37]/50 rounded-2xl transition-colors duration-500" />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="glass-gold rounded-2xl p-8 sm:p-12 text-center"
+          >
+            <h3 className="text-2xl sm:text-3xl font-bold mb-3">{t(lang, 'hero.title')}</h3>
+            <p className="text-white/70 mb-7 max-w-xl mx-auto">{t(lang, 'about.lead')}</p>
+            <div className="flex flex-wrap gap-3 justify-center">
+              <a href={SITE.whatsappUrl} target="_blank" rel="noopener noreferrer" className="px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-md uppercase tracking-wider text-sm font-semibold transition-all inline-flex items-center gap-2">
+                <MessageCircle className="w-4 h-4" /> WhatsApp
+              </a>
+              <a href={`tel:${SITE.phoneIntl}`} className="px-6 py-3 btn-outline-gold rounded-md uppercase tracking-wider text-sm inline-flex items-center gap-2">
+                <Phone className="w-4 h-4" /> {SITE.phone}
+              </a>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+    </>
   );
 };
 
