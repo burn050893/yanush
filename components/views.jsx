@@ -12,14 +12,12 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
 const HERO_IMAGES_RAW = [
-  { url: 'https://images.unsplash.com/photo-1614605637622-84a362f981f1?w=1920&q=80', label: 'Porsche Panamera' },
-  { url: 'https://images.unsplash.com/photo-1567808291548-fc3ee04dbcf0?w=1920&q=80', label: 'Audi R8' },
-  { url: 'https://images.unsplash.com/photo-1594051673969-172a6f721d3c?w=1920&q=80', label: 'BMW 5 Series' },
-  { url: 'https://images.unsplash.com/photo-1610475426610-9d49bac9e278?w=1920&q=80', label: 'Audi RS Q8' },
-  { url: 'https://images.unsplash.com/photo-1582467029039-e3b110cbe8d9?w=1920&q=80', label: 'Jaecoo SUV' },
-  { url: 'https://images.unsplash.com/photo-1610641018620-fd72f15b9eab?w=1920&q=80', label: 'Takeldienst 24/7' },
-  { url: 'https://images.unsplash.com/photo-1659031981099-00ecc60adf30?w=1920&q=80', label: 'Audi A3' },
-  { url: 'https://images.pexels.com/photos/10561894/pexels-photo-10561894.jpeg?w=1920&q=80', label: 'Peugeot' },
+  { url: 'https://images.unsplash.com/photo-1614605637622-84a362f981f1?w=1920&q=85', label: 'Porsche 911' },
+  { url: 'https://images.unsplash.com/photo-1567808291548-fc3ee04dbcf0?w=1920&q=85', label: 'Audi R8' },
+  { url: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=1920&q=85', label: 'BMW M5' },
+  { url: 'https://images.unsplash.com/photo-1610641018620-fd72f15b9eab?w=1920&q=85', label: 'Takeldienst 24/7' },
+  { url: 'https://images.unsplash.com/photo-1659031981099-00ecc60adf30?w=1920&q=85', label: 'Audi A3' },
+  { url: 'https://images.pexels.com/photos/10561894/pexels-photo-10561894.jpeg?w=1920&q=85', label: 'Peugeot 3008' },
 ];
 
 // Fisher-Yates shuffle for random order each load
@@ -49,18 +47,15 @@ export const HomeView = ({ lang, setView, cars }) => {
       <section className="relative h-screen min-h-[700px] w-full overflow-hidden">
         {heroImages.map((img, i) => (
           <motion.div key={img.url} initial={{ opacity: 0, scale: 1.1 }} animate={{ opacity: i === idx ? 1 : 0, scale: i === idx ? 1 : 1.1 }} transition={{ duration: 1.5 }}
-            className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${img.url})` }} />
+            className="absolute inset-0 bg-cover" style={{ backgroundImage: `url(${img.url})`, backgroundPosition: 'center 28%' }} />
         ))}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent" />
-
-        {/* current car label */}
-        <div className="absolute top-24 right-6 lg:right-12 z-10">
-          <motion.div key={heroImages[idx]?.label} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}
-            className="px-3 py-1.5 glass-gold rounded-full text-[11px] uppercase tracking-[0.25em] text-[#d4af37] hidden sm:block">
-            {heroImages[idx]?.label}
-          </motion.div>
-        </div>
+        {/* Top fade for navigation legibility */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-transparent" />
+        {/* Bottom mask – hides license plate area */}
+        <div className="absolute inset-x-0 bottom-0 h-[35%] bg-gradient-to-t from-black via-black/95 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-[18%] bg-black pointer-events-none" />
+        {/* Left side darkening for hero text contrast */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/15 to-transparent" />
 
         <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
           <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }}>
