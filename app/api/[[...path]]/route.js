@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/mongodb';
 import { v4 as uuidv4 } from 'uuid';
 import { cookies } from 'next/headers';
+import { sendContactEmail, sendSellRequestEmail } from '@/lib/email';
 
 const ADMIN_USER = process.env.ADMIN_USER || 'admin';
 const ADMIN_PASS = process.env.ADMIN_PASS || 'admin';
@@ -141,6 +142,8 @@ async function handler(request, ctx) {
       };
       if (!sr.name || !sr.phone) return err('Name and phone required', 400);
       await db.collection('sell_requests').insertOne(sr);
+      // Fire-and-forget email notification (non-blocking)
+      sendSellRequestEmail(sr).catch((e) => console.error('sell email error:', e));
       return json({ success: true, id: sr.id });
     }
 
@@ -160,13 +163,16 @@ async function handler(request, ctx) {
     // ---- CONTACT MESSAGES ----
     if (route === 'contact' && method === 'POST') {
       const body = await request.json();
-      await db.collection('contact_messages').insertOne({
+      const msg = {
         id: uuidv4(),
         name: String(body.name || ''),
         email: String(body.email || ''),
         message: String(body.message || ''),
         createdAt: new Date().toISOString(),
-      });
+      };
+      await db.collection('contact_messages').insertOne(msg);
+      // Fire-and-forget email notification (non-blocking)
+      sendContactEmail(msg).catch((e) => console.error('contact email error:', e));
       return json({ success: true });
     }
 
