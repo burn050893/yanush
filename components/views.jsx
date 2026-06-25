@@ -12,12 +12,12 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
 const HERO_IMAGES_RAW = [
-  { url: 'https://images.unsplash.com/photo-1614605637622-84a362f981f1?w=1920&q=85', label: 'Porsche 911' },
-  { url: 'https://images.unsplash.com/photo-1567808291548-fc3ee04dbcf0?w=1920&q=85', label: 'Audi R8' },
-  { url: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=1920&q=85', label: 'BMW M5' },
-  { url: 'https://images.unsplash.com/photo-1610641018620-fd72f15b9eab?w=1920&q=85', label: 'Takeldienst 24/7' },
-  { url: 'https://images.unsplash.com/photo-1659031981099-00ecc60adf30?w=1920&q=85', label: 'Audi A3' },
-  { url: 'https://images.pexels.com/photos/10561894/pexels-photo-10561894.jpeg?w=1920&q=85', label: 'Peugeot 3008' },
+  { url: '/heroes/porsche.jpg', label: 'Porsche 911' },
+  { url: '/heroes/audi-r8.jpg', label: 'Audi R8' },
+  { url: '/heroes/bmw-m5.jpg', label: 'BMW M5' },
+  { url: '/heroes/takel.jpg', label: 'Takeldienst 24/7' },
+  { url: '/heroes/audi-a3.jpg', label: 'Audi A3' },
+  { url: '/heroes/peugeot.jpg', label: 'Peugeot 3008' },
 ];
 
 // Fisher-Yates shuffle for random order each load
@@ -47,15 +47,14 @@ export const HomeView = ({ lang, setView, cars }) => {
       <section className="relative h-screen min-h-[700px] w-full overflow-hidden">
         {heroImages.map((img, i) => (
           <motion.div key={img.url} initial={{ opacity: 0, scale: 1.1 }} animate={{ opacity: i === idx ? 1 : 0, scale: i === idx ? 1 : 1.1 }} transition={{ duration: 1.5 }}
-            className="absolute inset-0 bg-cover" style={{ backgroundImage: `url(${img.url})`, backgroundPosition: 'center 28%' }} />
+            className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${img.url})` }} />
         ))}
         {/* Top fade for navigation legibility */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-transparent" />
-        {/* Bottom mask – hides license plate area */}
-        <div className="absolute inset-x-0 bottom-0 h-[35%] bg-gradient-to-t from-black via-black/95 to-transparent pointer-events-none" />
-        <div className="absolute inset-x-0 bottom-0 h-[18%] bg-black pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-transparent" />
+        {/* Subtle bottom fade for footer/dots legibility */}
+        <div className="absolute inset-x-0 bottom-0 h-[18%] bg-gradient-to-t from-black/95 via-black/40 to-transparent pointer-events-none" />
         {/* Left side darkening for hero text contrast */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/15 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/10 to-transparent" />
 
         <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
           <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }}>
