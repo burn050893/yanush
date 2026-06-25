@@ -466,7 +466,7 @@ export const SellView = ({ lang }) => {
               <Shield className="w-5 h-5 text-[#d4af37]" />
             </div>
             <div className="text-xs text-white/75 leading-snug">
-              <strong className="text-white">100% transparant.</strong> Geen verborgen kosten, geen verplichtingen.
+              <strong className="text-white">{t(lang, 'sell.trustTitle')}</strong> {t(lang, 'sell.trustDesc')}
             </div>
           </motion.div>
         </motion.aside>
